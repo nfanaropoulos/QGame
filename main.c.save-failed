@@ -1,0 +1,402 @@
+# include <stdio.h>
+# include <conio.h>
+# include <string.h>
+# include <stdlib.h>
+# include <windows.h>
+# include "var.h"
+void gotoxy(int x,int y)
+{
+printf("%c[%d;%df",0x1B,y,x);
+}
+
+int question_increment(){
+        FILE *eq;
+        e.id = 0;
+        eq = fopen("easy_questions.txt", "rb+");
+        while(fread(&e, sizeof(e), 1, eq)==1) {
+        e.id = e.id+1;
+        }
+        return e.id;
+}
+
+int currentquestion(struct easy e){
+int choice;
+int answer;
+puts(e.question);
+puts(e.answerA);
+puts(e.answerB);
+puts(e.answerC);
+puts(e.answerD);
+while(choice>4 || choice <1){
+    MessageBox(0, "Please Enter 1-2-3 or 4 only !!", "Warning", 0);
+    }
+
+}
+int main()
+{
+    SMALL_RECT windowSize = {0 , 0 , 100 , 47}; //change the values
+    SetConsoleWindowInfo(GetStdHandle(STD_OUTPUT_HANDLE), TRUE, &windowSize);
+
+    FILE *acc;
+    FILE *eq;
+    FILE *board;
+    char uname[15];
+    char upass[15];
+    int ch;
+    int ch1;
+    int ch2;
+    int qnum;
+    qnum = question_increment();
+    int questionid;
+    int totalq;
+    char another = 'y';
+    char continueq = 'y';
+    int tmpscore = 0;
+    int playerAnswer;
+    long int recsize;
+    recsize = sizeof(player);
+    int gold;
+    int tempgold;      //SHOP needed variable ????? check it if it's needed or not
+    int answer;
+    char buffer[255];
+    int tick;
+    int x;
+    int y;
+    int newScore;   // variable to calculate new score . Needs more testing.
+    int lives;
+    int tmplives;
+    int shopChoice;   //SHOP variable
+//Main Menu
+mainmenu:
+    {
+        system("CLS");
+        printf("%#oMENU\n");
+        printf("1. TO CREATE ACCOUNT.\n");
+        printf("2. TO LOGIN.\n");
+        gotoxy(1,55);
+        printf("************************************************************************************************************************\n");
+        printf("Version : 0.4 BETA\t\t\t\tIEAK AKMI 1st Semester\t\t\t\tDEV:Nikos Fanaropoulos");
+        gotoxy(1,5);
+        printf("ENTER YOUR CHOICE:->");
+        PlaySound(TEXT("lounge.wav"), NULL, SND_LOOP | SND_ASYNC);
+        scanf("%d",&ch);
+        PlaySound(TEXT("silent.wav"), NULL, SND_LOOP | SND_ASYNC);
+        while(ch > 2 || ch < 1){
+            fflush(stdin);
+             MessageBox(0, "Please enter 1-2 only!", "Warning", 0);
+             goto mainmenu;
+           }
+        switch(ch)
+        {
+            case 1:
+                      acc=fopen("accounts.txt","ab");
+                      system("CLS");
+                      printf("ENTER USERNAME:->");
+                      scanf("%s", &player.username);
+                      fflush(stdin);
+                      printf("\nENTER PASSWORD:->");
+                      scanf("%s", &player.password);
+
+                      player.score = 0;
+                      player.gold = 0;
+                      player.lives = 3;
+
+                      fseek(acc, 0, SEEK_END);
+                      fwrite(&player,recsize,1,acc);
+                      fflush(stdin);
+                      fclose(acc);
+                      goto mainmenu;
+                    break;
+            case 2:
+                    acc=fopen("accounts.txt","rb");
+                    system("CLS");
+                    printf("USERNAME:->");
+                    scanf("%s", &uname);
+                    printf("\nPASSWORD:->");
+                    scanf("%s", &upass);
+
+                    while(fread(&player,recsize,1,acc))
+                    {
+                        if(strcmp(uname,player.username)==0)
+                        {
+                            if(strcmp(upass,player.password)==0)
+                            {
+                               goto logged;
+                            }
+                            else {
+                                printf("Wrong Password Please Try Again!Press any key");
+                                getch();
+                                goto mainmenu;
+                            }
+                        }
+                    }
+                    printf("Account not found! Please press any key");
+                    getch();
+                    goto mainmenu;
+                    break;
+            case 112:
+                    goto adminlog;
+        }
+    }
+//       getch();
+//logged
+ logged:
+                {
+                tmplives = player.lives;
+                system("CLS");
+                printf("Welcome");
+                printf("\033[1;31m");
+                printf("%s", player.username);
+                printf("\033[0m;");
+                printf("\t\tYour Lives: ");
+                printf("\033[1;31m");
+                printf("%d", tmplives);
+                printf("\033[0m;");
+                printf("\t\tYour Account Score: ");
+                printf("\033[1;31m");
+                printf("%d", player.score);
+                printf("\033[0m;");
+                printf("\t\tYour Session Score: ");
+                printf("\033[1;31m");
+                printf("%d", tmpscore);
+                printf("\033[0m;");
+                printf("\t\tYour Gold: ");
+                printf("\033[1;31m");
+                printf("%d", player.gold);
+                printf("\033[0m;");
+                printf("\n\n\n****Main Lobby**** \n");
+
+
+                printf("1. Play QUIZ\n");
+                printf("2. LeaderBoard\n");
+                printf("3. Shop\n");
+                PlaySound(TEXT("lounge.wav"), NULL, SND_LOOP | SND_ASYNC);
+                scanf("%d", &ch1);
+                PlaySound(TEXT("silent.wav"), NULL, SND_LOOP | SND_ASYNC);
+                while(ch1 > 3 || ch1 < 1){
+                      fflush(stdin);
+                      MessageBox(0, "Please enter 1-2 or 3 only!", "Warning", 0);
+                      goto logged;
+                    }
+                  switch(ch1)
+                {
+                case 1:
+
+                     while (continueq == 'y'){
+                     if (tmplives >0)
+                     {
+                      srand ( time(NULL) );
+                      questionid = rand() %(qnum-1) + 1;
+                      int a = answer;
+                      eq=fopen("easy_questions.txt", "rb");
+                      fseek(eq, 0, SEEK_SET);
+                      while(fread(&e, sizeof(e), 1, eq))
+                      {
+
+                      if (questionid == e.id)
+                        {
+                      PlaySound(TEXT("enxiety1.wav"), NULL, SND_LOOP | SND_ASYNC);
+                      printf("\nQUESTION-->");
+                      puts(e.question);
+                      printf("\n1)%s\n2)%s\n3)%s\n4)%s\n", e.answerA, e.answerB, e.answerC, e.answerD);
+                      fflush(stdin);
+                      printf("**************\n");
+                      printf("Your Answer : ");
+                      playerAnswer = getchar();
+                      while((char)playerAnswer> '4' || (char)playerAnswer <'1'){
+                        fflush(stdin);
+                        MessageBox(0, "Please Enter 1-2-3 or 4 only !!", "Warning", 0);
+                        playerAnswer = getchar();
+                        }
+                      if(playerAnswer == e.correct){
+                        PlaySound(TEXT("correct.wav"), NULL, SND_ASYNC);
+                        printf("\n***************\n");
+                        printf("Correct Answer!");
+                        printf("\n***************\n");
+                        tmpscore += 5;
+                       break;
+                      }else{
+                      PlaySound(TEXT("wrong.wav"), NULL, SND_ASYNC);
+                      tmplives -= 1;
+                      printf("wrong answer");
+                      }
+                        }
+                      }
+                printf("\nContinue ? (y/n): ");
+                continueq = getch();
+                system("CLS");
+                printf("Welcome");
+                printf("\033[1;31m");
+                printf("%s", player.username);
+                printf("\033[0m;");
+                printf("\t\tYour Lives: ");
+                printf("\033[1;31m");
+                printf("%d", tmplives);
+                printf("\033[0m;");
+                printf("\t\tYour Account Score: ");
+                printf("\033[1;31m");
+                printf("%d", player.score);
+                printf("\033[0m;");
+                printf("\t\tYour Session Score: ");
+                printf("\033[1;31m");
+                printf("%d", tmpscore);
+                printf("\033[0m;");
+                printf("\t\tYour Gold: ");
+                printf("\033[1;31m");
+                printf("%d", player.gold);
+                printf("\033[0m;");
+
+ //              for (tick=20; tick >= 0; tick = tick - 1){
+ //                   printf("\r\t\t\t\t\t\t\t\t\t\t\tTIME: %d ", tick);
+ //                   sleep(1);
+ //                   fflush(stdout);
+ //                   }
+                       }else{
+                      printf("sorry, no more lives.");
+                      goto nolives;
+                      }
+                    }
+   nolives:
+                continueq = 'y';
+                fclose(acc);
+                acc=fopen("accounts.txt", "rb+");
+                rewind(acc);
+                while(fread(&player, recsize,1,acc)==1)
+                {
+                    if(strcmp(uname,player.username)==0)
+                    {
+                        newScore = player.score + tmpscore;
+                        player.score = newScore;
+                        player.gold = player.score/100;
+                        player.lives = tmplives;
+                        printf("\n\n\nplayer.username is %s, player.password is %s, player.score is %d", player.username, player.password, player.score);
+                        getch();
+                        fseek(acc, -recsize,SEEK_CUR);
+                        fwrite(&player, recsize, 1, acc);
+                        fclose(acc);
+                        fflush(stdin);
+                    }
+                }
+                board=fopen("board.txt", "r+");
+
+                printf("Give me your name: ");
+                scanf("%s", &b.name);
+                fflush(stdin);
+                b.score = tmpscore;
+                fseek(board, 0, SEEK_END);
+                fprintf(board, "%s....................%d\n", b.name, b.score);
+//                fwrite(&b, sizeof(b),1, board);
+                fclose(board);
+
+
+                      goto mainmenu;
+
+                case 2:
+                    system("CLS");
+                    PlaySound(TEXT("champions.wav"), NULL, SND_LOOP | SND_ASYNC);
+                    printf("**************LEADERBOARD******************\n\n");
+                    board = fopen("board.txt", "r");
+                    while(fgets(buffer, 255, (FILE*) board)) {
+                    printf("%s", buffer);
+                    }
+                    fclose(board);
+                    getch();
+                    break;
+                case 3:                                                                           //SHOP implementation
+                    system("CLS");
+                    printf("$$$$$$$$$$$$$$$$$$$$-----SHOP-----$$$$$$$$$$$$$$$$$$$$\n\n");
+                    printf("SALES TODAY ONLY!!\n\n");
+                    printf("Available Gold : ", player.gold);
+                    printf("1. 1 Live = 1 gold\n\n");
+                    printf("Please Select: ");
+                    scanf("%d", &shopChoice);
+                    while(shopChoice > 1 || ch < 1){
+                    fflush(stdin);
+                    MessageBox(0, "Currently option 1 is only available", "Warning", 0);
+                    break;
+                    }
+                    if(shopChoice == 1)
+                    {
+                    acc=fopen("accounts.txt", "rb+");
+                    rewind(acc);
+                    while(fread(&player, recsize,1,acc)==1)
+                      {
+                         if(strcmp(uname,player.username)==0)
+                          {
+                    player.gold = player.gold - 1;
+                    player.score = player.score - 100;
+                    player.lives = player.lives + 1;
+                    printf("\n\n\n Purchase completed!");
+                    rewind(acc);
+                    fseek(acc, -recsize, SEEK_CUR);
+                    fwrite(&player, recsize, 1, acc);
+                    fclose(acc);
+                          }
+                      }
+                    }
+                    break;
+                }
+                goto logged;
+
+           }
+
+
+//Administrator Log in
+ adminlog:
+            {
+                gold = 50000000;
+                system("CLS");
+                printf("Welcome");
+                printf("\033[1;31m");
+                printf("ADMIN ACCOUNT");
+                printf("\033[0m;");
+                printf("\t\tYour Score: ");
+                printf("\033[1;31m");
+                printf("---");
+                printf("\033[0m;");
+                printf("\t\tYour Gold: ");
+                printf("\033[1;31m");
+                printf("%d", gold);
+                printf("\033[0m;");
+                printf("\n\n\n****Main Lobby**** \n");
+                printf("1. ADD QUIZ Easy Questions\n");
+                printf("2. ADD QUIZ Normal Questions\n");
+                printf("3. ADD QUIZ Hard Questions\n");
+                printf("4. Shop\n");
+                PlaySound(TEXT("lounge.wav"), NULL, SND_LOOP | SND_ASYNC);
+                scanf("%d", &ch2);
+                PlaySound(TEXT("silent.wav"), NULL, SND_LOOP | SND_ASYNC);
+                switch(ch2)
+                {
+                case 1:
+                    while (another == 'y'){
+                      qnum = question_increment();
+                      e.id = qnum;
+                      eq=fopen("easy_questions.txt","rb+");
+                      system("CLS");
+                      printf("ENTER Question No %d:", qnum);
+                      fflush(stdin);
+                      printf("\nENTER Question:->");
+                      gets(e.question);
+                      printf("\nENTER Choice 1:->");
+                      gets(e.answerA);
+                      printf("\nENTER Choice 2:->");
+                      gets(e.answerB);
+                      printf("\nENTER Choice 3:->");
+                      gets(e.answerC);
+                      printf("\nENTER Choice 4:->");
+                      gets(e.answerD);
+                      printf("\nENTER Correct Answer:->");
+                      scanf("%s", &e.correct);
+                      fseek(eq, 0, SEEK_END);
+                      fwrite(&e, sizeof(e), 1, eq);
+                      printf("Question Added!");
+                      fclose(eq);
+                      printf("Add another ? (y/n):");
+                      another = getche();
+                    }
+                      break;
+               }
+               return(0);
+            }
+}

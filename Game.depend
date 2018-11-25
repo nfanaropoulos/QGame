@@ -1,0 +1,67 @@
+# depslib dependency file v1.0
+1543140282 source:c:\users\ulothar\desktop\game\main.c
+	<stdio.h>
+	<conio.h>
+	<string.h>
+	<stdlib.h>
+	<windows.h>
+	"var.h"
+	<shellApi.h>
+
+1542136904 source:c:\users\ulothar\desktop\game\test.c
+	<stdio.h>
+	<stdlib.h>
+
+1542834366 source:e:\game\main.c
+	<stdio.h>
+	<conio.h>
+	<string.h>
+	<stdlib.h>
+	<windows.h>
+	"var.h"
+	<shellApi.h>
+
+1542654910 e:\game\var.h
+	<windows.h>
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<time.h>
+
+1542366582 source:g:\game\main.c
+	<stdio.h>
+	<conio.h>
+	<string.h>
+	<stdlib.h>
+	<windows.h>
+	"var.h"
+
+1542336182 g:\game\var.h
+	<windows.h>
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<time.h>
+
+1543076139 c:\users\ulothar\desktop\game\var.h
+	<windows.h>
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<time.h>
+
+1542489284 source:c:\users\ulothar\desktop\release ver\game\main.c
+	<stdio.h>
+	<conio.h>
+	<string.h>
+	<stdlib.h>
+	<windows.h>
+	"var.h"
+
+1542336182 c:\users\ulothar\desktop\release ver\game\var.h
+	<windows.h>
+	<stdio.h>
+	<string.h>
+	<stdlib.h>
+	<time.h>
+

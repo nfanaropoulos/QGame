@@ -1,0 +1,14 @@
+Bugs:
+
+1.  Score math check.
+2.  Need solution for debug mode printf(); and scanf(); for saving data.
+3.  leader board "..." are not synched.
+
+
+TODO :
+
+1. Sort out the leaderboard by score and display it.
+2. Add timer in questions and if timer is over then lose life
+3. shop items. (maybe more than just lives.)
+4. Add exit nodes and make program run without need to stop.
+5. music in different areas. (music to shop too)
