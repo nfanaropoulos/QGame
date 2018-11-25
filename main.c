@@ -207,82 +207,82 @@ mainmenu:{
     }
 //logged
  logged:{
-                system("CLS");
-                footer();
-                gotoxy(1,1);
-                printf("\033[1;34m");
-                printf("Welcome ");
-                printf("\033[1;31m");
-                printf("%s", player.username);
-                printf("\033[0m");
-                gotoxy(20,1);
-                printf("\033[1;34m");
-                printf("Your Lives: ");
-                printf("\033[1;31m");
-                printf("%d", tmplives);
-                printf("\033[0m");
-                gotoxy(40,1);
-                printf("\033[1;34m");
-                printf("Your Account Score: ");
-                printf("\033[1;31m");
-                printf("%d", player.score);
-                printf("\033[0m");
-                gotoxy(70,1);
-                printf("\033[1;34m");
-                printf("Your Session Score: ");
-                printf("\033[1;31m");
-                printf("%d", tmpscore);
-                printf("\033[0m");
-                gotoxy(100,1);
-                printf("\033[1;34m");
-                printf("Your Gold: ");
-                printf("\033[1;31m");
-                printf("%d", player.gold);
-                printf("\033[0m");
-                printf("\033[1;34m");
-                gotoxy(100,22);
-                printf("****Main Lobby****");
-                gotoxy(100,24);
-                printf("1. Play QUIZ");
-                gotoxy(100,25);
-                printf("2. LeaderBoard");
-                gotoxy(100,26);
-                printf("3. Shop");
-                gotoxy(100,27);
-                printf("4. Logout");
-                PlaySound(TEXT("lounge.wav"), NULL, SND_LOOP | SND_ASYNC);
-                gotoxy(100,29);
-                printf("\033[1;32m");
-                printf("ENTER YOUR CHOICE:-> ");
-                printf("\033[1;31m");
-                scanf("%d", &ch1);
-                PlaySound(TEXT("silent.wav"), NULL, SND_LOOP | SND_ASYNC);
-                while(ch1 > 4 || ch1 < 1){
-                      fflush(stdin);
-                      MessageBox(0, "Please enter 1-2 or 3 only!", "Warning", 0);
-                      goto logged;
+                system("CLS");                                                                     //Header for the logged menu.
+                footer();                                                                          //Footer for the logged menu.
+                gotoxy(1,1);                                                                       //
+                printf("\033[1;34m");                                                              //
+                printf("Welcome ");                                                                //
+                printf("\033[1;31m");                                                              //
+                printf("%s", player.username);                                                     //
+                printf("\033[0m");                                                                 //
+                gotoxy(20,1);                                                                      //
+                printf("\033[1;34m");                                                              //
+                printf("Your Lives: ");                                                            //
+                printf("\033[1;31m");                                                              //
+                printf("%d", tmplives);                                                            //
+                printf("\033[0m");                                                                 //
+                gotoxy(40,1);                                                                      //
+                printf("\033[1;34m");                                                              //
+                printf("Your Account Score: ");                                                    //
+                printf("\033[1;31m");                                                              //
+                printf("%d", player.score);                                                        //
+                printf("\033[0m");                                                                 //
+                gotoxy(70,1);                                                                      //
+                printf("\033[1;34m");                                                              //
+                printf("Your Session Score: ");                                                    //
+                printf("\033[1;31m");                                                              //
+                printf("%d", tmpscore);                                                            //
+                printf("\033[0m");                                                                 //
+                gotoxy(100,1);                                                                     //
+                printf("\033[1;34m");                                                              //
+                printf("Your Gold: ");                                                             //
+                printf("\033[1;31m");                                                              //
+                printf("%d", player.gold);                                                         //
+                printf("\033[0m");                                                                 //
+                printf("\033[1;34m");                                                              //
+                gotoxy(100,22);                                                                    //
+                printf("****Main Lobby****");                                                      //
+                gotoxy(100,24);                                                                    //
+                printf("1. Play QUIZ");                                                            //
+                gotoxy(100,25);                                                                    //
+                printf("2. LeaderBoard");                                                          //
+                gotoxy(100,26);                                                                    //
+                printf("3. Shop");                                                                 //
+                gotoxy(100,27);                                                                    //
+                printf("4. Logout");                                                               //
+                PlaySound(TEXT("lounge.wav"), NULL, SND_LOOP | SND_ASYNC);                         //Play the lounge.wav sound in a loop state.
+                gotoxy(100,29);                                                                    //
+                printf("\033[1;32m");                                                              //
+                printf("ENTER YOUR CHOICE:-> ");                                                   //
+                printf("\033[1;31m");                                                              //
+                scanf("%d", &ch1);                                                                 //Input for player for his choice.
+                PlaySound(TEXT("silent.wav"), NULL, SND_LOOP | SND_ASYNC);                         //Play the silent song to make lounge.wav stop. This is a patent since PlaySound function has no stop feature.
+                while(ch1 > 4 || ch1 < 1){                                                         //While loop to make sure the player choose between 1 and 4.
+                      fflush(stdin);                                                               //Clear stdin memory.
+                      MessageBox(0, "Please enter 1-2 or 3 only!", "Warning", 0);                  //Messagebox with the error message if the player choose something that is not valid.
+                      goto logged;                                                                 //Jump to logged label.
                     }
-                  switch(ch1)
+                  switch(ch1)                                                                      //Switch for the player's choice.
                 {
-                case 1:
-                      while (continueq == 'y'){
-                            if(tmplives < 1)
+                case 1:                                                                            //First Case. Player choose to play the Quiz Game.
+                      while (continueq == 'y'){                                                    //While loop that sets the variable continueq (if the player wants to continue playing after answering previous one) to 'y'.
+                            if(tmplives < 1)                                                       //Condition for leaving the loop of asking question is if the player has less than 1 lives.
                             {
-                                acc=fopen("accounts.txt","rb+");
-                                rewind(acc);
-                                while(fread(&player, recsize,1,acc)==1)
+                                acc=fopen("accounts.txt","rb+");                                   //If player reach 0 lives, opens the accounts.txt file in read, binary and append mode.
+                                rewind(acc);                                                       //Sets the cursor to the beginning of the file accounts.txt.
+                                while(fread(&player, recsize,1,acc)==1)                            //While loop that reads the accounts.txt file one account per time.
                                     {
-                                        if(strcmp(uname,player.username)==0)
+                                        if(strcmp(uname,player.username)==0)                       //Comparing the username given by the player at the login with the username saved at the account creation and if found match.
                                             {
-                                                newScore = player.score + tmpscore;
-                                                player.score = newScore;
-                                                player.gold = player.score/100;
-                                                player.lives = tmplives;
-                                                fseek(acc, -recsize,SEEK_CUR);
-                                                fwrite(&player, recsize, 1, acc);
-                                                fclose(acc);
-                                                fflush(stdin);
-                                                tmpscore = 0;                       //Reset the tmpscore back to 0 after you stop playing so that when you start over again the tmpscore is 0 again
+                                                newScore = player.score + tmpscore;                //Intermediate variable NewScore that is needed for the final player.score saved in accounts.txt. Equals old player.score plus tmpscore.
+                                                player.score = newScore;                           //Sets the player.score that will be saved in the accounts.txt for the player to be equal with the newScore.
+                                                player.gold = player.score/100;                    //Edit the player.gold amount saved in the file to be equal with 1/100 of the total player.score.
+                                                player.lives = tmplives;                           //Update the player.lives in accounts.txt by making them equal with the new status tmplives this way players with 0 lives can't play more.
+                                                fseek(acc, -recsize,SEEK_CUR);                     //Sets the cursor to the beginning of the player account entry by moving backwards exactly the same characters to rewrite new data.
+                                                fwrite(&player, recsize, 1, acc);                  //Updates the account details for the player.
+                                                fclose(acc);                                       //Closes the file accounts.txt
+                                                fflush(stdin);                                     //Clear memory of stdin.
+                                                tmpscore = 0;                                      //Reset the tmpscore back to 0 after you stop playing so that when you start over again the tmpscore is 0 again.
                                             }
                                     }
                                 PlaySound(TEXT("ending.wav"), NULL, SND_LOOP | SND_ASYNC);
