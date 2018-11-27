@@ -50,7 +50,7 @@ int main(){
     FILE *eq;                                                                                      //Pointer for the file of easy_questions.txt (eq being the initiates) which holds the questions of the game.
     FILE *board;                                                                                   //Pointer for the file of board.txt which holds the scores of the players.
     char uname[15];                                                                                //Variable for the player input when they log in to their account. It's used to compare the input with the saved entry.
-    char upass[15];                                                                                //Variable for the player input when they log in to their account. It's used to compare the input with the saved entry.
+    char upass[15];                                                                               //Variable for the player input when they log in to their account. It's used to compare the input with the saved entry.
     int ch;                                                                                        //Variable for the Create Account input choice.
     int ch1;                                                                                       //Variable for the Login Account input choice.
     int ch2;                                                                                       //Variable for the Administrator input choice.
@@ -75,6 +75,10 @@ int main(){
     int len;
     char digs;                                                                                     //Variable for the digits of Player's password.
     char asterisk;                                                                                 //Variable for changing the password digit into asterisk.
+    char digs1;
+    char logch;
+    int i;
+
 
 //Main Menu
 mainmenu:{
@@ -122,18 +126,16 @@ mainmenu:{
                       printf("\033[1;34m");                                                        //
                       printf("ENTER PASSWORD:->");                                                 //
                       printf("\033[1;31m");                                                        //
-                      scanf("%s", &player.password);                                               //Player input for password and saves the string given as player.password.
-//                      for (digs = 1; digs <= 15 ; digs++)                                        //Password shown as * characters at the register page. Starting from 1st digit until 15th adding 1 dig each time.
-//                          {
-//                              asterisk = getch();                                                //The variable asterisk becomes the character input by the player.
-//                              if(asterisk == '\r')                                               //If the asterisk is the enter key.
-//                                {
-//                                  break;                                                         //Break the for loop and move to the end for saving the data.
-//                                }
-//                              player.password[digs] = asterisk;                                  //If the asterisk is not the enter key, each character of the desired password gets it's appropriate sequence place to save.
-//                              asterisk = '*';                                                    //Convert the asterisk into the character *.
-//                              printf("%c", asterisk);                                            //Once the real character is saved into the player.password variable to be saved, now show to the screen only the asterisk.
-//                          }
+                      do{
+                        player.password[digs]=getch();
+                        if('\r'==player.password[digs])
+                            break;
+                        putch('*');
+                        digs++;
+
+                      }
+                      while(player.password[digs]!='\r');
+                      player.password[digs]='\0';
                       printf("\033[0m");                                                           //
                       player.score = 0;                                                            //Set's the score of the player to 0, since it's a new account that has been created.
                       player.gold = 0;                                                             //Set's the gold of the player to 0, since it's a new account that has been created.
@@ -161,19 +163,27 @@ mainmenu:{
                     gotoxy(100,25);                                                                //
                     printf("PASSWORD:->");                                                         //
                     printf("\033[1;31m");                                                          //Player input for password. This variable is different than the one we use in account creation because it's needed for comparison.
-                    scanf("%s", &upass);
-//                  for (digs = 1; digs <= 15 ; digs++)                                            //Password shown as * characters at the register page. Starting from 1st digit until 15th adding 1 dig each time.
-//                        {
-//                            asterisk = getch();                                                  //The variable asterisk becomes the character input by the player.
-//                            if(asterisk == '\r')                                                 //If the asterisk is the enter key.
-//                              {
-//                                break;                                                           //Break the for loop and move to the end for saving the data.
-//                              }
-//                            upass[digs] = asterisk;                                              //If the asterisk is not the enter key, each character of the desired password gets it's appropriate sequence place to save.
-//                            asterisk = '*';                                                      //Convert the asterisk into the character *.
-//                            printf("%c", asterisk);                                              //Once the real character is saved into the player.password variable to be saved, now show to the screen only the asterisk.
-//                        }
-//                        printf("%s", upass[digs]);
+                    while(1){
+                        if (digs1 <0){
+                            digs1=0;
+                        }
+
+                    logch = getch();
+                    if(logch == 13)
+                        break;
+                    if(logch ==8)
+                    {
+                        putch('b');
+                        putch(NULL);
+                        putch('b');
+                        digs1--;
+                        continue;
+                    }
+                    upass[digs1++] = logch;
+                    logch= '*';
+                    putch(logch);
+        }
+
                     while(fread(&player,recsize,1,acc))                                            //While loop that reads the accounts.txt file one account (username, password etc) each time.
                     {
                         if(strcmp(uname,player.username)==0)                                       //If the login username string and the username entered at the account creation return 0 (are the same).
