@@ -6,7 +6,29 @@
 # include "var.h"
 # include <shellApi.h>
 
-void footer(){                                                                                    //Function for footer in game.
+void mainmenu(void);
+void logged(void);
+void header(void);
+void adminlog(void);
+
+
+//Global Variables
+FILE *acc;                                                                                        //Pointer for the file of the accounts.txt which holds the account details of the players.
+FILE *board;                                                                                      //Pointer for the file of board.txt which holds the scores of the players.
+FILE *eq;                                                                                         //Pointer for the file of easy_questions.txt (eq being the initiates) which holds the questions of the game.
+char uname[15];                                                                                   //Variable for the player input when they log in to their account. It's used to compare the input with the saved entry.
+char upass[15];                                                                                   //Variable for the player input when they log in to their account. It's used to compare the input with the saved entry.
+char digs;                                                                                        //Variable for the digits of Player's password.
+int tmplives;                                                                                     //Variable to calculate the temporary lives of the player (used when the player gives a wrong answer).
+long int recsize = sizeof(player);                                                                //Variable that is set to be long (accounts file can be long).
+int tmpscore = 0;                                                                                 //Set's the temporary score (session score) back to 0.
+int qnum;                                                                                         //Variable for the total number of questions inside the easy_questions.txt file.
+char digs1;
+char logch;
+
+
+
+void footer(){                                                                                     //Function for footer in game.
           gotoxy(1,65);
           printf("\033[1;34m");
           printf("********************************************************************************************************************************************************************************************************************************************");
@@ -17,6 +39,43 @@ void footer(){                                                                  
           gotoxy(205,71);
           printf("Developer:Nikos Fanaropoulos");
           printf("\033[0m");
+}
+
+void header(){
+                acc=fopen("accounts.txt","rb");
+                system("CLS");                                                                     //Header for the logged menu.
+                gotoxy(1,1);                                                                       //
+                printf("\033[1;34m");                                                              //
+                printf("Welcome ");                                                                //
+                printf("\033[1;31m");                                                              //
+                printf("%s", player.username);                                                     //
+                printf("\033[0m");                                                                 //
+                gotoxy(20,1);                                                                      //
+                printf("\033[1;34m");                                                              //
+                printf("Your Lives: ");                                                            //
+                printf("\033[1;31m");                                                              //
+                tmplives = player.lives;
+                printf("%d", tmplives);                                                            //
+                printf("\033[0m");                                                                 //
+                gotoxy(40,1);                                                                      //
+                printf("\033[1;34m");                                                              //
+                printf("Your Account Score: ");                                                    //
+                printf("\033[1;31m");                                                              //
+                printf("%d", player.score);                                                        //
+                printf("\033[0m");                                                                 //
+                gotoxy(70,1);                                                                      //
+                printf("\033[1;34m");                                                              //
+                printf("Your Session Score: ");                                                    //
+                printf("\033[1;31m");                                                              //
+                printf("%d", tmpscore);                                                            //
+                printf("\033[0m");                                                                 //
+                gotoxy(100,1);                                                                     //
+                printf("\033[1;34m");                                                              //
+                printf("Your Gold: ");                                                             //
+                printf("\033[1;31m");                                                              //
+                printf("%d", player.gold);                                                         //
+                printf("\033[0m");                                                                 //
+                printf("\033[1;34m");                                                              //
 }
 void fullscreen(){                                                                                //Function for full screen when the game opens.
 keybd_event(VK_MENU,0x38,0,0);
@@ -43,45 +102,8 @@ int question_increment(){                                                       
         return e.id;                                                                              //Returns the value of e.id and save it in memory.
 }
 
-int main(){
-    SetConsoleOutputCP(CP_UTF8);                                                                   //****************Experimentation entry: Making Console UTF8 characters friendly.
-    fullscreen();                                                                                  //Runs the full screen function.
-    FILE *acc;                                                                                     //Pointer for the file of the accounts.txt which holds the account details of the players.
-    FILE *eq;                                                                                      //Pointer for the file of easy_questions.txt (eq being the initiates) which holds the questions of the game.
-    FILE *board;                                                                                   //Pointer for the file of board.txt which holds the scores of the players.
-    char uname[15];                                                                                //Variable for the player input when they log in to their account. It's used to compare the input with the saved entry.
-    char upass[15];                                                                               //Variable for the player input when they log in to their account. It's used to compare the input with the saved entry.
-    int ch;                                                                                        //Variable for the Create Account input choice.
-    int ch1;                                                                                       //Variable for the Login Account input choice.
-    int ch2;                                                                                       //Variable for the Administrator input choice.
-    int qnum;                                                                                      //Variable for the total number of questions inside the easy_questions.txt file.
-    qnum = question_increment();                                                                   //Set's the total number of questions variable to be equal with the function that counts the entries.
-    int questionid;                                                                                //Variable for the question that is being currently asked from the game to the player.
-    char another = 'y';                                                                            //Variable for asking the administrator if he wants to add another question to the easy_questions.txt file.
-    char continueq = 'y';                                                                          //Variable for asking the player if he wants to continue playing and have the game ask another question.
-    int playerAnswer;                                                                              //Variable for the player input when he wants to give the answer of the question being asked by the game.
-    long int recsize;                                                                              //Variable that is set to be long (accounts file can be long).
-    recsize = sizeof(player);                                                                      //Set's the value of the recsize Variable to the total length of the player structure (Each entry).
-    int tempgold;                                                                                  //****************SHOP needed variable ????? check it if it's needed or not.
-    char scorers[255];                                                                              //Variable with 255 maximum length needed to collect the data from the board.txt file for the high scores.
-    int tmpscore = 0;                                                                              //Set's the temporary score (session score) back to 0.
-    int tmplives;                                                                                  //Variable to calculate the temporary lives of the player (used when the player gives a wrong answer).
-    int x;                                                                                         //Variable for the x axis needed for the alignment of the inputs/outputs.
-    int y;                                                                                         //Variable for the y axis needed for the alignment of the inputs/outputs.
-    int newScore;                                                                                  //variable to calculate new score . Needs more testing.
-    int lives;                                                                                     //Variable for the lives of the player (used to calculate the actual lives remaining).
-    int shopChoice;                                                                                //SHOP variable.
-    int counter;                                                                                   //Variable needed to count how many tabs are needed when saving data for the leader board.
-    int len;
-    char digs;                                                                                     //Variable for the digits of Player's password.
-    char asterisk;                                                                                 //Variable for changing the password digit into asterisk.
-    char digs1;
-    char logch;
-    int i;
-
-
-//Main Menu
-mainmenu:{
+void mainmenu(){
+        int ch;                                                                                    //Variable for the Create Account input choice.
         system("CLS");                                                                             //Lines 99-111. Game User Interface options for better visualization
         footer();
         gotoxy(108,20);                                                                            //Ansi code for coloring text. Same for all other cases.
@@ -102,10 +124,11 @@ mainmenu:{
         printf("\033[1;31m");
         scanf("%d",&ch);                                                                           //Player input to choose if he want to create account or to login to an existent one.
         PlaySound(TEXT("silent.wav"), NULL, SND_LOOP | SND_ASYNC);                                 //Play the silent song to make lounge.wav stop. This is a patent since PlaySound function has no stop feature.
+        memset(player.password, 0, sizeof player.password);
         while(ch > 3 && ch <11297 || ch < 1 || ch > 11299){                                        //While loop that handles the player's input choice.
             fflush(stdin);                                                                         //Command to empty (flush) the stdin (standard input).
              MessageBox(0, "Please use 1 or 2 only!", "WARNING", 0);                               //Message box that appears when the player gives wrong choices. Choices adjusted for admin.
-             goto mainmenu;                                                                        //Brings the player back to Main Menu in case of a wrong choice.
+             mainmenu();                                                                        //Brings the player back to Main Menu in case of a wrong choice.
            }
         switch(ch)                                                                                 //Switch for the player choice.
         {
@@ -141,12 +164,11 @@ mainmenu:{
                       player.gold = 0;                                                             //Set's the gold of the player to 0, since it's a new account that has been created.
                       player.lives = 3;                                                            //Set's the lives of the player to 3, which is the default amount for new accounts.
                       tmplives = 3;                                                                //Set's the temporary lives of the player to the default 3. Needed for in game calculation.
-
                       fseek(acc, 0, SEEK_END);                                                     //Goes to the end of the file accounts.txt that has been opened in line 125.
                       fwrite(&player,recsize,1,acc);                                               //Write's the input data from the player plus the fixed variables as a new entry in accounts.txt.
                       fflush(stdin);                                                               //Empty the stdin from the values given before.
                       fclose(acc);                                                                 //Close the file accounts.txt.
-                      goto mainmenu;                                                               //Brings the player back to Main Menu.
+                      mainmenu();                                                                  //Brings the player back to Main Menu.
                     break;                                                                         //End of the first Case.
             case 2:                                                                                //Second Case : This choice is for Account Login.
                     acc=fopen("accounts.txt","rb");                                                //Opens the accounts.txt in read/binary mode).
@@ -163,27 +185,15 @@ mainmenu:{
                     gotoxy(100,25);                                                                //
                     printf("PASSWORD:->");                                                         //
                     printf("\033[1;31m");                                                          //Player input for password. This variable is different than the one we use in account creation because it's needed for comparison.
-                    while(1){
-                        if (digs1 <0){
-                            digs1=0;
-                        }
-
-                    logch = getch();
-                    if(logch == 13)
-                        break;
-                    if(logch ==8)
-                    {
-                        putch('b');
-                        putch(NULL);
-                        putch('b');
-                        digs1--;
-                        continue;
-                    }
-                    upass[digs1++] = logch;
-                    logch= '*';
-                    putch(logch);
-        }
-
+                      do{
+                        upass[digs1]=getch();
+                        if('\r'==upass[digs1])
+                            break;
+                        putch('*');
+                        digs1++;
+                      }
+                      while(upass[digs1]!='\r');
+                      upass[digs1]='\0';
                     while(fread(&player,recsize,1,acc))                                            //While loop that reads the accounts.txt file one account (username, password etc) each time.
                     {
                         if(strcmp(uname,player.username)==0)                                       //If the login username string and the username entered at the account creation return 0 (are the same).
@@ -191,65 +201,46 @@ mainmenu:{
                             if(strcmp(upass,player.password)==0)                                   //And if the login password string and the password entered at the account creation return 0 (are the same).
                             {
                                tmplives = player.lives;                                            //Temporary lives variable gets the value of the saved lives for the account that is logged.
-                               goto logged;                                                        //Jumps on logged label.
+                               logged();                                                           //Jumps on logged label.
                             }
                             else {                                                                 //In case the password does not match with the one that was used in the account creation.
                                 gotoxy(90,29);                                                     //
                                 printf("\033[1;34m");                                              //
                                 printf("Wrong Password Please Try Again!Press any key");           //Print that the password is wrong.
+                                printf("\nupass is: %s, uname is %s", upass, uname);
                                 getch();                                                           //Wait for a key to be pressed by the player.
-                                goto mainmenu;                                                     //Jump on the mainmenu label.
+                                mainmenu();                                                        //Jump on the mainmenu label.
                                  }
                         }
                     }
                     gotoxy(90,29);                                                                 //
                     printf("\033[1;34m");                                                          //
                     printf("Account not found! Please press any key");                             //In case the username does not match with the one that was used in the account creation, print that the account is not found.
+                    printf("\nupass is: %s, uname is %s", upass, uname);
                     getch();                                                                       //Wait for a key to be pressed by the player.
-                    goto mainmenu;                                                                 //Jumps on the mainmenu label.
+                    mainmenu();                                                                    //Jumps on the mainmenu label.
                     break;                                                                         //End of the second Case.
             case 3:
                 exit(0);
 
             case 11298:                                                                            //11298 Case : This choice is for the Administrator Account. Workaround for super user rights.
-                    goto adminlog;                                                                 //Jump on the adminlog label.
+                    adminlog();                                                                 //Jump on the adminlog label.
         }
-    }
-//logged
- logged:{
-                system("CLS");                                                                     //Header for the logged menu.
+
+}
+
+void logged(){
+                int ch1;                                                                           //Variable for the Login Account input choice.
+                int questionid;                                                                    //Variable for the question that is being currently asked from the game to the player.
+                qnum = question_increment();                                                       //Set's the total number of questions variable to be equal with the function that counts the entries.
+                char continueq = 'y';                                                              //Variable for asking the player if he wants to continue playing and have the game ask another question.
+                char scorers[255];                                                                 //Variable with 255 maximum length needed to collect the data from the board.txt file for the high scores.
+                int counter;                                                                       //Variable needed to count how many tabs are needed when saving data for the leader board.
+                int playerAnswer;                                                                  //Variable for the player input when he wants to give the answer of the question being asked by the game.
+                int shopChoice;                                                                    //SHOP variable.
+                int newScore;                                                                      //variable to calculate new score . Needs more testing.
                 footer();                                                                          //Footer for the logged menu.
-                gotoxy(1,1);                                                                       //
-                printf("\033[1;34m");                                                              //
-                printf("Welcome ");                                                                //
-                printf("\033[1;31m");                                                              //
-                printf("%s", player.username);                                                     //
-                printf("\033[0m");                                                                 //
-                gotoxy(20,1);                                                                      //
-                printf("\033[1;34m");                                                              //
-                printf("Your Lives: ");                                                            //
-                printf("\033[1;31m");                                                              //
-                printf("%d", tmplives);                                                            //
-                printf("\033[0m");                                                                 //
-                gotoxy(40,1);                                                                      //
-                printf("\033[1;34m");                                                              //
-                printf("Your Account Score: ");                                                    //
-                printf("\033[1;31m");                                                              //
-                printf("%d", player.score);                                                        //
-                printf("\033[0m");                                                                 //
-                gotoxy(70,1);                                                                      //
-                printf("\033[1;34m");                                                              //
-                printf("Your Session Score: ");                                                    //
-                printf("\033[1;31m");                                                              //
-                printf("%d", tmpscore);                                                            //
-                printf("\033[0m");                                                                 //
-                gotoxy(100,1);                                                                     //
-                printf("\033[1;34m");                                                              //
-                printf("Your Gold: ");                                                             //
-                printf("\033[1;31m");                                                              //
-                printf("%d", player.gold);                                                         //
-                printf("\033[0m");                                                                 //
-                printf("\033[1;34m");                                                              //
+                header();                                                                          //Header for the logged menu.
                 gotoxy(100,22);                                                                    //
                 printf("****Main Lobby****");                                                      //
                 gotoxy(100,24);                                                                    //
@@ -270,7 +261,7 @@ mainmenu:{
                 while(ch1 > 4 || ch1 < 1){                                                         //While loop to make sure the player choose between 1 and 4.
                       fflush(stdin);                                                               //Clear stdin memory.
                       MessageBox(0, "Please enter 1-2 or 3 only!", "Warning", 0);                  //Messagebox with the error message if the player choose something that is not valid.
-                      goto logged;                                                                 //Jump to logged label.
+                      logged();                                                                    //Jump to logged label.
                     }
                   switch(ch1)                                                                      //Switch for the player's choice.
                 {
@@ -300,7 +291,7 @@ mainmenu:{
                                 printf("Sorry but you have no more lives to play the game. Press Any key");
                                 getch();
                                 PlaySound(TEXT("silent.wav"), NULL, SND_LOOP | SND_ASYNC);
-                                goto logged;
+                                logged();
                             }
                       srand ( time(NULL) );
                       questionid = rand() %(qnum-1) + 1;
@@ -312,40 +303,10 @@ mainmenu:{
 
                       if (questionid == e.id)
                         {
-                            system("CLS");
                             footer();
-                            gotoxy(1,1);
-                            printf("\033[1;34m");
-                            printf("Welcome ");
-                            printf("\033[1;31m");
-                            printf("%s", player.username);
-                            printf("\033[0m");
-                            gotoxy(20,1);
-                            printf("\033[1;34m");
-                            printf("Your Lives: ");
-                            printf("\033[1;31m");
-                            printf("%d", tmplives);
-                            printf("\033[0m");
-                            gotoxy(40,1);
-                            printf("\033[1;34m");
-                            printf("Your Account Score: ");
-                            printf("\033[1;31m");
-                            printf("%d", player.score);
-                            printf("\033[0m");
-                            gotoxy(70,1);
-                            printf("\033[1;34m");
-                            printf("Your Session Score: ");
-                            printf("\033[1;31m");
-                            printf("%d", tmpscore);
-                            printf("\033[0m");
-                            gotoxy(100,1);
-                            printf("\033[1;34m");
-                            printf("Your Gold: ");
-                            printf("\033[1;31m");
-                            printf("%d", player.gold);
-                            printf("\033[0m");
-                      PlaySound(TEXT("enxiety1.wav"), NULL, SND_LOOP | SND_ASYNC);
+                            header();
 
+                      PlaySound(TEXT("enxiety1.wav"), NULL, SND_LOOP | SND_ASYNC);
                       gotoxy(70,25);
                       printf("\033[1;34m");
                       printf("QUESTION-->");
@@ -424,39 +385,8 @@ mainmenu:{
                     }
                 }
                 board=fopen("board.txt", "r+");
-                system("CLS");
                 footer();
-                gotoxy(1,1);
-                printf("\033[1;34m");
-                printf("Welcome ");
-                printf("\033[1;31m");
-                printf("%s", player.username);
-                printf("\033[0m");
-                gotoxy(20,1);
-                printf("\033[1;34m");
-                printf("Your Lives: ");
-                printf("\033[1;31m");
-                printf("%d", tmplives);
-                printf("\033[0m");
-                gotoxy(40,1);
-                printf("\033[1;34m");
-                printf("Your Account Score: ");
-                printf("\033[1;31m");
-                printf("%d", player.score);
-                printf("\033[0m");
-                gotoxy(70,1);
-                printf("\033[1;34m");
-                printf("Your Session Score: ");
-                printf("\033[1;31m");
-                printf("%d", tmpscore);
-                printf("\033[0m");
-                gotoxy(100,1);
-                printf("\033[1;34m");
-                printf("Your Gold: ");
-                printf("\033[1;31m");
-                printf("%d", player.gold);
-                printf("\033[0m");
-                printf("\033[1;34m");
+                header();
                 gotoxy(75,22);
                 printf("Give me your preferred name for Leader board: ");
                 printf("\033[1;31m");
@@ -474,7 +404,7 @@ mainmenu:{
                 fprintf(board, "%d\n", b.score);                                            //Last part of the file input which is the score.
                 fclose(board);
 
-                      goto logged;
+                      logged();
 
                 case 2:
                     system("CLS");
@@ -494,40 +424,11 @@ mainmenu:{
                     printf("\033[1;34m");
                     printf("Press any key to go back");
                     getch();
-                    goto logged;
+                    logged();
                 case 3:                                                                           //SHOP implementation
-                    system("CLS");
                     footer();
+                    header();
                     PlaySound(TEXT("shop.wav"), NULL, SND_LOOP | SND_ASYNC);
-                    gotoxy(1,1);
-                    printf("\033[1;34m");
-                    printf("Welcome ");
-                    printf("\033[1;31m");
-                    printf("%s", player.username);
-                    printf("\033[0m");
-                    gotoxy(20,1);
-                    printf("\033[1;34m");
-                    printf("Your Lives: ");
-                    printf("\033[1;31m");
-                    printf("%d", tmplives);
-                    printf("\033[0m");
-                    gotoxy(40,1);
-                    printf("\033[1;34m");
-                    printf("Your Account Score: ");
-                    printf("\033[1;31m");
-                    printf("%d", player.score);
-                    printf("\033[0m");
-                    gotoxy(70,1);
-                    printf("\033[1;34m");
-                    printf("Your Session Score: ");
-                    printf("\033[1;31m");
-                    printf("%d", tmpscore);
-                    printf("\033[0m");
-                    gotoxy(100,1);
-                    printf("\033[1;34m");
-                    printf("Your Gold: ");
-                    printf("\033[1;31m");
-                    printf("%d", player.gold);
                     gotoxy(70,20);
                     printf("\033[1;34m");
                     printf("$$$$$$$$$$$$$$$$$$$$-----SHOP-----$$$$$$$$$$$$$$$$$$$$");
@@ -553,7 +454,7 @@ mainmenu:{
                     }
                     if (shopChoice == 0)
                     {
-                        goto logged;
+                        logged();
                     }
                     if(shopChoice == 1)
                     {
@@ -563,7 +464,7 @@ mainmenu:{
                             printf("\033[1;34m");
                             printf("Sorry but you do not have enough gold to make the purchase.");
                             getch();
-                            goto logged;
+                            logged();
                         }
                     acc=fopen("accounts.txt", "rb+");
                     rewind(acc);
@@ -581,21 +482,23 @@ mainmenu:{
                     fseek(acc, -recsize, SEEK_CUR);
                     fwrite(&player, recsize, 1, acc);
                     fclose(acc);
-                    goto logged;
+                    logged();
                           }
                       }
                     }
                 case 4:
                     {
-                        goto mainmenu;
+                        mainmenu();
                     }
                 }
-                goto logged;
+                logged();
 
-           }
-//Administrator Log in
- adminlog:{
+}
+
+void adminlog(){
                 system("CLS");
+                int ch2;                                                                                       //Variable for the Administrator input choice.
+                char another = 'y';                                                                            //Variable for asking the administrator if he wants to add another question to the easy_questions.txt file.
                 footer();
                 gotoxy(1,1);
                 printf("\033[1;34m");
@@ -659,4 +562,16 @@ mainmenu:{
                }
                return(0);
             }
+
+
+int main(){
+    SetConsoleOutputCP(CP_UTF8);                                                                   //****************Experimentation entry: Making Console UTF8 characters friendly.
+    fullscreen();                                                                                  //Runs the full screen function.
+    int tempgold;                                                                                  //****************SHOP needed variable ????? check it if it's needed or not.
+    int x;                                                                                         //Variable for the x axis needed for the alignment of the inputs/outputs.
+    int y;                                                                                         //Variable for the y axis needed for the alignment of the inputs/outputs.
+    int lives;                                                                                     //Variable for the lives of the player (used to calculate the actual lives remaining).
+    int len;
+    char asterisk;                                                                                 //Variable for changing the password digit into asterisk.
+mainmenu();
 }
