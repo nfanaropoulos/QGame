@@ -1,7 +1,4 @@
-ulothar						5
-giannischantas					10
-nio						15
-sakis						5
-sakis						20
-sakis						110
-sakisds						110
+
+nikos						100
+petros						100
+nikos						100

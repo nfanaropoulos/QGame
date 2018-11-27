@@ -2,25 +2,14 @@
 <CodeBlocks_layout_file>
 	<FileVersion major="1" minor="0" />
 	<ActiveTarget name="Release" />
+	<File name="main.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-2" zoom_2="0">
+		<Cursor>
+			<Cursor1 position="15558" topLine="131" />
+		</Cursor>
+	</File>
 	<File name="var.h" open="1" top="0" tabpos="2" split="0" active="1" splitpos="0" zoom_1="0" zoom_2="0">
 		<Cursor>
 			<Cursor1 position="536" topLine="0" />
 		</Cursor>
-	</File>
-	<File name="main.c" open="1" top="1" tabpos="1" split="0" active="1" splitpos="0" zoom_1="-2" zoom_2="0">
-		<Cursor>
-			<Cursor1 position="39039" topLine="0" />
-		</Cursor>
-		<Folding>
-			<Collapse line="8" />
-			<Collapse line="20" />
-			<Collapse line="27" />
-			<Collapse line="32" />
-			<Collapse line="35" />
-			<Collapse line="45" />
-			<Collapse line="77" />
-			<Collapse line="184" />
-			<Collapse line="562" />
-		</Folding>
 	</File>
 </CodeBlocks_layout_file>
