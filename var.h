@@ -27,6 +27,10 @@ struct board{
         char name[15];
         int score;
         };
+struct ckfile{
+        int id;
+        };
 struct p player;
 struct easy e;
 struct board b;
+struct ckfile ck;

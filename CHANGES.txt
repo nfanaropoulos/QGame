@@ -1,3 +1,4 @@
 --26/11/2018: Basic Game version with full functionality. Project has been 2 weeks in local drive under coding.
 --26/11/2018: Masking feature for password implemented, there are bugs that will be addressed. Added CHANGES.TXT file.
 --27/11/2018: Fixed a bug that refresh correctly the header when lives are purchased from the shop.
+--30/11/2018: Fixed a bug with password masking. Now backspace works properly when used to correct passwords.
